@@ -6,7 +6,7 @@ class ProductsService {
     this.generate(); // Llamamos al método generate cada vez que se crea una instancia de ProductsService
   }
 
-  generate() {
+  async generate() {
     const limit = 100;
 
     for (let i = 0; i < limit; i++) {
@@ -19,7 +19,7 @@ class ProductsService {
     }
   }
 
-  create(body) {
+  async create(body) {
     // Obtenemos el id del body para poder validar (tambien se puede hacer destructuring para obtener otras propiedades, como name, price, etc)
     const { id } = body;
 
@@ -42,11 +42,12 @@ class ProductsService {
     return newProduct;
   }
 
-  find() {
+  async find() {
     return this.products;
   }
 
-  findOne(id) {
+  async findOne(id) {
+    const total = this.getAl();
     const product = this.products.find(
       (product) => product.id === parseInt(id, 10), // parseInt(id, 10) convierte el 'string' que viene de req.params a un número
     );
@@ -56,7 +57,7 @@ class ProductsService {
     return product;
   }
 
-  update(id, body) {
+  async update(id, body) {
     // Validando si el producto existe
     const index = this.products.findIndex(
       (product) => product.id === parseInt(id, 10),
@@ -74,7 +75,7 @@ class ProductsService {
     return this.products[index];
   }
 
-  delete(id) {
+  async delete(id) {
     // Validando si el producto existe
     const index = this.products.findIndex(
       (product) => product.id === parseInt(id, 10),
