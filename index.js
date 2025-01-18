@@ -1,11 +1,23 @@
 const { logErrors, errorHandler } = require('./middlewares/error.handler');
 const express = require('express');
 const routerApi = require('./routes');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+const whiteList = ['http://localhost:8080', 'https://myapp.co'];
+const options = {
+  origin: (origin, callback) => {
+    if (whiteList.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
 
 app.get('/', (req, res) => {
   res.send('Hello World');
@@ -20,6 +32,7 @@ app.get('/', (req, res) => {
 routerApi(app);
 app.use(logErrors);
 app.use(errorHandler);
+app.use(cors(options));
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
