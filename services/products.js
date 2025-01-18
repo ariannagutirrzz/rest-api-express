@@ -11,10 +11,11 @@ class ProductsService {
 
     for (let i = 0; i < limit; i++) {
       this.products.push({
-        //id: faker.string.uuid(), Este es una alternativa para generar un id único
+        // id: faker.string.uuid(),
         id: i + 1,
         name: faker.commerce.productName(),
         price: parseInt(faker.commerce.price()),
+        isOffer: faker.datatype.boolean(),
       });
     }
   }
@@ -47,13 +48,21 @@ class ProductsService {
   }
 
   async findOne(id) {
-    const total = this.getAl();
+    console.log('Product id:', id);
     const product = this.products.find(
       (product) => product.id === parseInt(id, 10), // parseInt(id, 10) convierte el 'string' que viene de req.params a un número
     );
+    console.log('Product found:', product);
+
     if (!product) {
       throw new Error('Product not found');
     }
+
+    if (product.isOffer) {
+      product.price = product.price * 0.8;
+      console.log('Product is on offer!');
+    }
+
     return product;
   }
 

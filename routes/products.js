@@ -1,7 +1,12 @@
 const ProductsService = require('../services/products');
 const express = require('express');
 const router = express.Router();
-
+const {
+  createProductSchema,
+  updateProductSchema,
+  getProductSchema,
+} = require('../schemas/products');
+const validatorHandler = require('../middlewares/validator.handler');
 // crear una instancia de ProductsService
 const service = new ProductsService();
 
@@ -27,38 +32,51 @@ router.get('/', async (req, res, next) => {
 //   res.json(bestSellers);
 // });
 
-router.get('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params; // req.params es un objeto que contiene los parámetros de la URL como string
-    const product = await service.findOne(id);
-    res.json(product);
-  } catch (error) {
-    next(error);
-  }
-});
+router.get(
+  '/:id',
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params; // req.params es un objeto que contiene los parámetros de la URL como string
+      const product = await service.findOne(id);
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
-router.post('/', async (req, res, next) => {
-  try {
-    const body = req.body;
+router.post(
+  '/',
+  validatorHandler(createProductSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
 
-    const newProduct = await service.create(body);
-    res.json(newProduct);
-  } catch (error) {
-    next(error);
-  }
-});
+      const newProduct = await service.create(body);
+      res.json(newProduct);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
-router.patch('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const body = req.body;
+router.patch(
+  '/:id',
+  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(updateProductSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
 
-    const updatedProduct = await service.update(id, body);
-    res.json(updatedProduct);
-  } catch (error) {
-    next(error);
-  }
-});
+      const updatedProduct = await service.update(id, body);
+      res.json(updatedProduct);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 router.delete('/:id', async (req, res, next) => {
   try {
