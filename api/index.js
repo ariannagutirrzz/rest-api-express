@@ -4,7 +4,7 @@ const routerApi = require('./routes');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -19,7 +19,7 @@ const options = {
   },
 };
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.send('Hello World');
 });
 
