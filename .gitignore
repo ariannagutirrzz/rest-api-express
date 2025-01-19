@@ -152,3 +152,8 @@ package-lock.json
 
 # ENV
 .env
+
+
+# Postgres
+
+data/postgres/pg_stat_tmp/*.stat
